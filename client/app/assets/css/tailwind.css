@@ -56,6 +56,6 @@
 
 	/* Slideout Panel */
 	.panel {
-		@apply fixed top-0 right-0 bg-white/10 backdrop-blur-sm rounded-tl-xl rounded-bl-xl border border-black p-8 transition-all duration-300;
+		@apply fixed top-0 right-0 bg-white/10 backdrop-blur-sm rounded-tl-xl rounded-bl-xl max-md:rounded-none border border-black p-4 md:p-8 transition-all duration-300;
 	}
 }

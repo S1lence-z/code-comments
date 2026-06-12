@@ -19,7 +19,7 @@ const emit = defineEmits(["update:isVisible"]);
 	<!-- Backdrop -->
 	<div v-if="isVisible" class="fixed inset-0" @click="emit('update:isVisible', false)"></div>
 	<!-- Panel -->
-	<div v-if="isVisible" class="panel flex flex-col z-50 max-w-xl h-full" :class="props.class">
+	<div v-if="isVisible" class="panel flex flex-col z-50 max-w-xl max-md:w-full h-dvh" :class="props.class">
 		<!-- Tools Panel -->
 		<div class="flex flex-row justify-end">
 			<span class="hover:bg-amber-900 hover:rounded-lg p-1" @click="emit('update:isVisible', false)">
@@ -27,7 +27,7 @@ const emit = defineEmits(["update:isVisible"]);
 			</span>
 		</div>
 
-		<div class="flex flex-col space-y-4">
+		<div class="flex flex-col space-y-4 flex-1 min-h-0 overflow-y-auto">
 			<!-- Header -->
 			<div v-if="props.title" class="flex text-lg text-white">
 				{{ props.title }}

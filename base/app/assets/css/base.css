@@ -59,7 +59,7 @@
 
 	/* Modal Styles */
 	.modal {
-		@apply fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm;
+		@apply fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4;
 	}
 
 	/* Navigation Tab Styles */
@@ -93,8 +93,11 @@
 		@apply bg-slate-800/50 backdrop-blur-lg rounded-2xl border border-slate-700 p-8 transition-all duration-300;
 	}
 
-	.card:hover {
-		@apply border-slate-600;
+	/* Hover-capable devices only (no sticky hover on touch) */
+	@media (hover: hover) {
+		.card:hover {
+			@apply border-slate-600;
+		}
 	}
 
 	.card-header {
@@ -121,8 +124,10 @@
 		@apply bg-slate-800/30 border border-slate-700 rounded-xl p-6 transition-all duration-200 ease-in cursor-pointer;
 	}
 
-	.card-item:hover {
-		@apply bg-slate-800/50 border-slate-600;
+	@media (hover: hover) {
+		.card-item:hover {
+			@apply bg-slate-800/50 border-slate-600;
+		}
 	}
 
 	.card-content {
