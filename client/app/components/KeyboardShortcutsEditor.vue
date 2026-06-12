@@ -74,7 +74,7 @@ const saveShortcuts = () => {
 <template>
 	<Card
 		:title="t('keyboardShortcuts.title')"
-		class="min-w-150 max-w-full mx-auto bg-slate-800/95"
+		class="md:min-w-150 max-w-full max-h-[90dvh] overflow-y-auto mx-auto bg-slate-800/95"
 	>
 		<div class="space-y-4">
 			<!-- Help text when editing -->

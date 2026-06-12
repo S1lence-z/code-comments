@@ -118,7 +118,7 @@ const {
 				<button
 					type="button"
 					@click="emit('file-comment-requested', props.currentNode.path)"
-					class="w-6 h-6 bg-white/10 hover:bg-white/20 hover:text-white rounded-md flex items-center justify-center transition-all duration-200 text-black cursor-pointer"
+					class="w-6 h-6 max-md:w-8 max-md:h-8 bg-white/10 hover:bg-white/20 hover:text-white rounded-md flex items-center justify-center transition-all duration-200 text-black cursor-pointer"
 					:title="t('fileExplorer.addComment')"
 					:aria-label="t('fileExplorer.addComment')"
 				>

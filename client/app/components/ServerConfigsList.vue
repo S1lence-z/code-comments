@@ -30,7 +30,7 @@ const getRepositoryName = (url: string) => {
 
 <template>
 	<Card
-		class="w-[600px] max-w-full mx-auto bg-slate-800/95"
+		class="w-150 max-w-full max-h-[90dvh] overflow-y-auto mx-auto bg-slate-800/95"
 		icon-name="archive"
 		icon-gradient="blue"
 		:title="t('serverConfigList.title')"
