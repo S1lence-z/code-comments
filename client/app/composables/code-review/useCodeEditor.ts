@@ -267,6 +267,10 @@ export const useCodeEditor = (props: CodeEditorProps, emit: CodeEditorEmits) => 
 	const handleEditorDoubleClick = (event: MouseEvent): void => {
 		if (!editorView.value) return;
 
+		// Ignore double-clicks inside the open form
+		if (event.target instanceof Element && event.target.closest(".cm-comment-form-widget"))
+			return;
+
 		const pos = editorView.value.posAtCoords({ x: event.clientX, y: event.clientY });
 		if (pos !== null && pos !== undefined) {
 			const lineNumber = editorView.value.state.doc.lineAt(pos).number;
