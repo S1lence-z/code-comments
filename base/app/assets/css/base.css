@@ -5,6 +5,24 @@
 	--color-slate-700: #334155;
 }
 
+@layer base {
+	/* Remove the tap-highlight flash on touch devices */
+	html {
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	/* Suppress focus outline for pointer/touch */
+	:focus:not(:focus-visible) {
+		outline: none;
+	}
+
+	/* Stop overscroll glow / bounce chaining to the document */
+	html,
+	body {
+		overscroll-behavior: none;
+	}
+}
+
 @layer components {
 	/* Button Styles */
 	.btn {
