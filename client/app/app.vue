@@ -156,6 +156,43 @@ watch(
 	{ immediate: false }
 );
 
+// Sync status indicator
+const syncIndicator = computed(() => {
+	if (settingsStore.isOfflineMode) {
+		return {
+			dot: "bg-gray-400",
+			textColor: "text-gray-400",
+			text: t("status.offlineMode"),
+			pulse: false,
+		};
+	}
+	switch (serverStore.getStatus) {
+		case "synced":
+			return {
+				dot: "bg-emerald-400",
+				textColor: "text-emerald-400",
+				text: t("status.commentsSynced"),
+				pulse: false,
+			};
+		case "syncing":
+			return {
+				dot: "bg-yellow-400",
+				textColor: "text-yellow-400",
+				text: t("status.syncingComments"),
+				pulse: true,
+			};
+		case "error":
+			return {
+				dot: "bg-red-400",
+				textColor: "text-red-400",
+				text: serverStore.getErrorMessage,
+				pulse: false,
+			};
+		default:
+			return null;
+	}
+});
+
 // Copy current URL to clipboard for sharing
 const copyShareUrl = async () => {
 	try {
@@ -184,48 +221,20 @@ const exportLocalComments = () => {
 </script>
 
 <template>
-	<div class="flex flex-col h-screen overflow-hidden">
+	<div class="flex flex-col h-dvh overflow-hidden">
 		<!-- Navigation Bar -->
 		<AppNavigationBar :title="t('app.title')" :navigation-routes="navigationRoutes">
-			<!-- Synced Status, Export, Options -->
+			<!-- Synced Status, Export, Options (desktop) -->
 			<div class="flex items-center gap-8">
 				<!-- Synced Status -->
-				<div v-if="!settingsStore.isOfflineMode" class="flex items-center space-x-8">
-					<!-- Synced Status -->
-					<div v-if="serverStore.getStatus === 'synced'" class="flex items-center gap-2">
-						<div class="w-2 h-2 bg-emerald-400 rounded-full"></div>
-						<span
-							class="text-emerald-400 font-medium text-md"
-							>{{ t("status.commentsSynced") }}</span
-						>
-					</div>
+				<div v-if="syncIndicator" class="flex items-center gap-2">
 					<div
-						v-else-if="serverStore.getStatus === 'syncing'"
-						class="flex items-center gap-2"
-					>
-						<div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div>
-						<span
-							class="text-yellow-400 font-medium text-md"
-							>{{ t("status.syncingComments") }}</span
-						>
-					</div>
-					<div
-						v-else-if="serverStore.getStatus === 'error'"
-						class="flex items-center gap-2"
-					>
-						<div class="w-2 h-2 bg-red-400 rounded-full"></div>
-						<span
-							class="text-red-400 font-medium text-md"
-							>{{ serverStore.getErrorMessage }}</span
-						>
-					</div>
-				</div>
-				<div v-else class="flex items-center gap-2">
-					<div class="w-2 h-2 bg-gray-400 rounded-full"></div>
-					<span
-						class="text-gray-400 font-medium text-md"
-						>{{ t("status.offlineMode") }}</span
-					>
+						class="w-2 h-2 rounded-full"
+						:class="[syncIndicator.dot, { 'animate-pulse': syncIndicator.pulse }]"
+					></div>
+					<span class="font-medium text-md" :class="syncIndicator.textColor">{{
+						syncIndicator.text
+					}}</span>
 				</div>
 
 				<div class="flex flex-row gap-4">
@@ -256,6 +265,58 @@ const exportLocalComments = () => {
 					/>
 				</div>
 			</div>
+
+			<!-- Synced Status (mobile, dot only) -->
+			<template #mobile-bar>
+				<div
+					v-if="syncIndicator"
+					class="w-2.5 h-2.5 rounded-full"
+					:class="[syncIndicator.dot, { 'animate-pulse': syncIndicator.pulse }]"
+					:title="syncIndicator.text"
+				></div>
+			</template>
+
+			<!-- Share, Export, Settings (mobile hamburger menu) -->
+			<template #mobile-menu="{ close }">
+				<div class="flex flex-col gap-3">
+					<Button
+						class="w-full"
+						:label="t('share.copyUrl')"
+						buttonStyle="secondary"
+						buttonSize="medium"
+						iconName="mdi:share-variant"
+						display="both"
+						@click="
+							copyShareUrl();
+							close();
+						"
+					/>
+					<Button
+						class="w-full"
+						:label="t('status.exportComments')"
+						buttonStyle="secondary"
+						buttonSize="medium"
+						iconName="mdi:download"
+						display="both"
+						@click="
+							exportLocalComments();
+							close();
+						"
+					/>
+					<Button
+						class="w-full"
+						:label="t('settings.title')"
+						buttonStyle="secondary"
+						buttonSize="medium"
+						iconName="mdi:cog"
+						display="both"
+						@click="
+							settingsStore.toggleSettingsOpen(true);
+							close();
+						"
+					/>
+				</div>
+			</template>
 		</AppNavigationBar>
 
 		<!-- Main Content -->
