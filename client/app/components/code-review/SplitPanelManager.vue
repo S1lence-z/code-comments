@@ -11,6 +11,9 @@ const { t } = useI18n();
 const props = defineProps<SplitPanelManagerProps>();
 const emit = defineEmits<SplitPanelManagerEmits>();
 
+const { isMobile } = useIsMobile();
+const visiblePanels = computed(() => (isMobile.value ? props.panels.slice(0, 1) : props.panels));
+
 const {
 	// State
 	containerElement,
@@ -35,9 +38,9 @@ const {
 		@dragleave="(event) => emit('drop-zone-leave', event)"
 		@drop="(event) => emit('drop-zone-drop', event)"
 	>
-		<template v-for="(panel, index) in panels" :key="panel.id">
+		<template v-for="(panel, index) in visiblePanels" :key="panel.id">
 			<Panel
-				:style="{ width: `${panel.size}%` }"
+				:style="{ width: isMobile ? '100%' : `${panel.size}%` }"
 				:panel-id="panel.id"
 				:open-tabs="panel.openTabs"
 				:active-tab="panel.activeTab"
@@ -92,9 +95,9 @@ const {
 					{{ t("panel.noFileSelected") }}
 				</div>
 			</Panel>
-			<!-- Resize Handle -->
+			<!-- Resize Handle (desktop only) -->
 			<ResizeHandle
-				v-if="index < panels.length - 1"
+				v-if="!isMobile && index < visiblePanels.length - 1"
 				:resizable-element="containerElement || null"
 				@resize-event="(event: MouseEvent) => handlePanelResize(index, event.clientX)"
 			/>
@@ -102,7 +105,7 @@ const {
 
 		<!-- Left Drop Zone -->
 		<div
-			v-if="leftDropZoneActive"
+			v-if="leftDropZoneActive && !isMobile"
 			class="absolute left-0 top-0 h-full bg-blue-500/30 border-r-2 border-blue-500 flex items-center justify-center z-10"
 			:style="{ width: dropZoneWidth + 'px' }"
 		>
@@ -113,7 +116,7 @@ const {
 
 		<!-- Right Drop Zone -->
 		<div
-			v-if="rightDropZoneActive"
+			v-if="rightDropZoneActive && !isMobile"
 			class="absolute right-0 top-0 h-full bg-blue-500/30 border-l-2 border-blue-500 flex items-center justify-center z-10"
 			:style="{ width: dropZoneWidth + 'px' }"
 		>

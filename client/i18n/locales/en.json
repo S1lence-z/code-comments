@@ -60,7 +60,8 @@
 		"noFilesFound": "No Files Found",
 		"noFilesFoundSubtext": "Set up a project on the Home page",
 		"noFileSelected": "No File Selected",
-		"noFileSelectedSubtext": "Please select a file to view its comments"
+		"noFileSelectedSubtext": "Please select a file to view its comments",
+		"openFileExplorer": "Open file explorer"
 	},
 	"overviewPage": {
 		"noCommentsFound": "No Comments Found",

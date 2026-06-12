@@ -7,6 +7,16 @@ export const useCodeReviewPage = () => {
 	const settingsStore = useSettingsStore();
 	const workspaceStore = useWorkspaceStore();
 
+	// Mobile layout state
+	const { isMobile } = useIsMobile();
+	const isMobileDrawerOpen = ref(false);
+	const openMobileDrawer = () => {
+		isMobileDrawerOpen.value = true;
+	};
+	const closeMobileDrawer = () => {
+		isMobileDrawerOpen.value = false;
+	};
+
 	// Sidebar state
 	const sidebarWidth = ref(280);
 	const minSidebarWidth = 200;
@@ -14,8 +24,9 @@ export const useCodeReviewPage = () => {
 	const sidebar = ref<HTMLElement | null>(null);
 
 	// Computed
+	// Desktop: settings toggle. Mobile: drawer state.
 	const isSidebarVisible = computed(() => {
-		return settingsStore.isSidebarOpen;
+		return isMobile.value ? isMobileDrawerOpen.value : settingsStore.isSidebarOpen;
 	});
 	const getFileTree = computed(() => projectDataStore.getFileTree);
 	const isLoadingRepository = computed(() => projectDataStore.isLoadingRepository);
@@ -51,6 +62,11 @@ export const useCodeReviewPage = () => {
 		isSidebarVisible,
 		getFileTree,
 		isLoadingRepository,
+		// Mobile layout state
+		isMobile,
+		isMobileDrawerOpen,
+		openMobileDrawer,
+		closeMobileDrawer,
 		// Sidebar state
 		sidebarWidth,
 		minSidebarWidth,

@@ -21,6 +21,11 @@ const {
 	isSidebarVisible,
 	getFileTree,
 	isLoadingRepository,
+	// Mobile layout state
+	isMobile,
+	isMobileDrawerOpen,
+	openMobileDrawer,
+	closeMobileDrawer,
 	// Sidebar state
 	sidebarWidth,
 	minSidebarWidth,
@@ -35,6 +40,27 @@ const {
 	handleSidebarResize,
 	handleFileQueryParam,
 } = useCodeReviewPage();
+
+// File explorer handlers (close the mobile drawer once a file is picked)
+const handleFileSelected = (filePath: string | null): void => {
+	workspaceStore.openPreviewFile(filePath);
+	if (isMobile.value) closeMobileDrawer();
+};
+
+const handleFileCommentFromTree = (filePath: string): void => {
+	handleFileCommentRequest(filePath);
+	if (isMobile.value) closeMobileDrawer();
+};
+
+// Swipe-left to close the mobile drawer
+let drawerTouchStartX = 0;
+const onDrawerTouchStart = (event: TouchEvent): void => {
+	drawerTouchStartX = event.touches[0]?.clientX ?? 0;
+};
+const onDrawerTouchMove = (event: TouchEvent): void => {
+	const currentX = event.touches[0]?.clientX ?? 0;
+	if (isMobile.value && drawerTouchStartX - currentX > 60) closeMobileDrawer();
+};
 
 // Drag and Drop State
 const dragDropState = useDragDropState();
@@ -186,12 +212,21 @@ onMounted(async () => {
 			<div class="flex flex-col h-full w-full">
 				<!-- Code Editor -->
 				<div class="flex h-full w-full overflow-hidden">
+					<!-- Mobile Drawer Backdrop -->
+					<div
+						v-if="isMobile && isMobileDrawerOpen"
+						class="fixed inset-0 z-40 bg-black/50"
+						@click="closeMobileDrawer"
+					></div>
+
 					<!-- Sidebar -->
 					<div
 						ref="sidebar"
 						v-if="isSidebarVisible"
-						class="shrink-0"
-						:style="{ width: sidebarWidth + 'px' }"
+						class="shrink-0 max-md:fixed max-md:inset-y-0 max-md:left-0 max-md:z-50 max-md:w-[85vw] max-md:max-w-80 max-md:bg-slate-900 max-md:border-r max-md:border-white/10"
+						:style="isMobile ? undefined : { width: sidebarWidth + 'px' }"
+						@touchstart.passive="onDrawerTouchStart"
+						@touchmove.passive="onDrawerTouchMove"
 					>
 						<!-- Loading Indicator -->
 						<div
@@ -210,11 +245,11 @@ onMounted(async () => {
 						<FileExplorer
 							v-else-if="getFileTree.length > 0"
 							:selectedPath="workspaceStore.activeFilePath"
-							@update:selected-path="workspaceStore.openPreviewFile"
+							@update:selected-path="handleFileSelected"
 							@file-pin-requested="workspaceStore.openAndPinFile"
 							:treeData="getFileTree"
 							@project-comment-requested="handleProjectCommentRequest"
-							@file-comment-requested="handleFileCommentRequest"
+							@file-comment-requested="handleFileCommentFromTree"
 						/>
 
 						<!-- Empty State -->
@@ -230,9 +265,9 @@ onMounted(async () => {
 						</div>
 					</div>
 
-					<!-- Resize Handle -->
+					<!-- Resize Handle (desktop only) -->
 					<ResizeHandle
-						v-if="isSidebarVisible"
+						v-if="isSidebarVisible && !isMobile"
 						:resizable-element="sidebar"
 						:min-width="minSidebarWidth"
 						:max-width="maxSidebarWidth"
@@ -296,6 +331,18 @@ onMounted(async () => {
 					</div>
 				</div>
 			</div>
+
+			<!-- Mobile File Explorer Toggle -->
+			<button
+				v-if="isMobile && !isMobileDrawerOpen"
+				type="button"
+				class="fixed bottom-4 left-4 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg cursor-pointer"
+				:aria-label="t('codeReviewPage.openFileExplorer')"
+				:title="t('codeReviewPage.openFileExplorer')"
+				@click="openMobileDrawer"
+			>
+				<Icon icon="mdi:file-tree" class="w-6 h-6" />
+			</button>
 
 			<!-- Project/File Comment Form -->
 			<AddEditCommentForm
