@@ -24,13 +24,13 @@ const {
 		<div class="mx-auto mt-8 mb-8 w-full max-w-7xl px-4">
 			<div class="space-y-8">
 				<!-- Filtering Bar -->
-				<div class="flex items-center gap-4">
-					<label class="text-slate-300 font-semibold uppercase text-lg mr-6">{{
+				<div class="flex flex-wrap items-center gap-2 md:gap-4">
+					<label class="text-slate-300 font-semibold uppercase text-base md:text-lg mr-0 md:mr-6">{{
 						t("overviewPage.filterByCommentType")
 					}}</label>
 					<!-- All Comment Types Options -->
 					<div
-						class="flex items-center backdrop-blur-sm rounded-lg border border-white/10 duration-200 hover:bg-white/10 text-lg uppercase px-4 py-2 cursor-pointer text-white"
+						class="flex items-center backdrop-blur-sm rounded-lg border border-white/10 duration-200 hover:bg-white/10 text-sm md:text-lg uppercase px-3 py-1.5 md:px-4 md:py-2 cursor-pointer text-white"
 						:class="{
 							'bg-white/20': selectedCommentTypeFilter === null,
 						}"
@@ -42,7 +42,7 @@ const {
 					<div
 						v-for="commentType in Object.values(CommentType)"
 						:key="commentType"
-						class="flex items-center backdrop-blur-sm rounded-lg border border-white/10 duration-200 hover:bg-white/10 text-lg uppercase px-4 py-2 cursor-pointer"
+						class="flex items-center backdrop-blur-sm rounded-lg border border-white/10 duration-200 hover:bg-white/10 text-sm md:text-lg uppercase px-3 py-1.5 md:px-4 md:py-2 cursor-pointer"
 						:class="{
 							' text-blue-200': commentType === CommentType.Singleline,
 							' text-green-200': commentType === CommentType.Multiline,

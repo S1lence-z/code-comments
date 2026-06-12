@@ -23,7 +23,7 @@ const {
 </script>
 
 <template>
-	<div v-if="showCards" class="flex space-x-8">
+	<div v-if="showCards" class="flex flex-col gap-4 md:flex-row md:gap-8">
 		<Card
 			v-if="showTotalCommentsCard"
 			:title="t('commentStatistics.totalTitle')"
