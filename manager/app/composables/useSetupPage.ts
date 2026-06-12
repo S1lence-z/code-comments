@@ -5,8 +5,7 @@ import { RepositoryType } from "../../../base/app/types/repository-type";
 import { isValidGithubUrl } from "../utils/url";
 import repositoryTypeOptions from "../../../base/app/types/repository-type-options";
 import { useAuthStore } from "../../../base/app/stores/authStore";
-import type { BackendProvider } from "../types/interfaces/backend-provider";
-import { StandardBackendProvider } from "../providers/backend/standard-backend-provider";
+import { useBackendStore } from "../stores/backendStore";
 
 /**
  * Orchestrates the project setup page logic: form state, validation, project creation, and server authentication.
@@ -23,8 +22,8 @@ export const useSetupPage = () => {
 	const { branchExistsInRepo } = useGithubBranchService();
 	const errorHandler = useErrorHandler();
 
-	// Backend provider
-	const backendProvider = ref<BackendProvider | null>(null);
+	// Backend provider store (built once from the server form, survives navigation)
+	const backendStore = useBackendStore();
 
 	// Query params composable
 	const { navigateToProject, navigateToOfflineProject, navigateWithServerUrl } = useQueryParams();
@@ -108,7 +107,7 @@ export const useSetupPage = () => {
 		repositoryUrl: string,
 		repositoryType: RepositoryType,
 		branchName: string,
-		projectName: string
+		projectName: string,
 	): Promise<void> => {
 		try {
 			isCreatingProject.value = true;
@@ -122,7 +121,7 @@ export const useSetupPage = () => {
 			};
 
 			// Call the provider to create the project
-			const response = await backendProvider.value!.createProject(setupData);
+			const response = await backendStore.provider!.createProject(setupData);
 
 			if (response && response.id) {
 				projectId.value = response.id;
@@ -150,7 +149,7 @@ export const useSetupPage = () => {
 			navigateToOfflineProject(
 				formRepositoryUrl.value.trim(),
 				formRepositoryType.value,
-				formBranchName.value.trim()
+				formBranchName.value.trim(),
 			);
 			return;
 		}
@@ -160,7 +159,7 @@ export const useSetupPage = () => {
 			formRepositoryUrl.value.trim(),
 			formRepositoryType.value,
 			projectId.value.trim(),
-			formBranchName.value.trim()
+			formBranchName.value.trim(),
 		);
 	};
 
@@ -171,7 +170,7 @@ export const useSetupPage = () => {
 			project.repository.repositoryUrl,
 			project.repository.repositoryType,
 			project.id,
-			project.repository.branch
+			project.repository.branch,
 		);
 	};
 
@@ -179,11 +178,15 @@ export const useSetupPage = () => {
 	const loadExistingProjects = async (): Promise<void> => {
 		try {
 			isLoadingProjects.value = true;
-			if (!formServerBaseUrl.value || !formServerBaseUrl.value.trim()) {
-				console.warn("Server base URL is not set. Cannot load existing projects.");
+			if (!formServerBaseUrl.value?.trim() && backendStore.serverBaseUrl) {
+				formServerBaseUrl.value = backendStore.serverBaseUrl;
+			}
+			if (!backendStore.provider) {
+				errorHandler.showWarning("Backend provider is not configured. Cannot load existing projects.");
 				return;
 			}
-			existingProjects.value = await backendProvider.value!.getProjects();
+			existingProjects.value = await backendStore.provider.getProjects();
+			projectsLoadedSuccessfully.value = true;
 		} catch (error) {
 			errorHandler.handleError(error, {
 				customMessage: "Failed to load existing projects.",
@@ -197,7 +200,7 @@ export const useSetupPage = () => {
 	// Handle submission of the server base URL form
 	const setServerConfiguration = async (
 		serverBaseUrl?: string,
-		token?: string
+		token?: string,
 	): Promise<void> => {
 		const urlToSubmit = serverBaseUrl ? serverBaseUrl : formServerBaseUrl.value.trim();
 		const passwordToSubmit = formServerPassword.value.trim();
@@ -208,12 +211,11 @@ export const useSetupPage = () => {
 
 		formServerBaseUrl.value = urlToSubmit;
 
-		// Initialize the backend provider
-		backendProvider.value = new StandardBackendProvider(urlToSubmit);
+		// Build and store the backend provider so it survives navigation
+		backendStore.configure(urlToSubmit, token);
 
 		// If token is provided, use it directly
 		if (token) {
-			backendProvider.value.setAuthToken(token);
 			authStore.saveAuthToken(urlToSubmit, token);
 			navigateWithServerUrl(urlToSubmit);
 			offlineModeStore.setServerUrlConfigured(true);
@@ -224,11 +226,11 @@ export const useSetupPage = () => {
 		if (passwordToSubmit) {
 			isAuthorizing.value = true;
 			try {
-				const response = await backendProvider.value.login(passwordToSubmit);
+				const response = await backendStore.provider!.login(passwordToSubmit);
 				if (!response.success) {
 					throw new Error(response.message);
 				}
-				backendProvider.value.setAuthToken(response.token!);
+				backendStore.setAuthToken(response.token!);
 				authStore.saveAuthToken(urlToSubmit, response.token!);
 				errorHandler.showSuccess(response.message);
 			} catch (error) {
@@ -247,7 +249,7 @@ export const useSetupPage = () => {
 	const useDefaultServerUrl = () => {
 		if (!config.public.defaultServerUrl) {
 			errorHandler.showError(
-				"No default server URL is configured. Please enter a server URL."
+				"No default server URL is configured. Please enter a server URL.",
 			);
 			return;
 		}
@@ -267,7 +269,7 @@ export const useSetupPage = () => {
 
 	// Disconnect from current server and go back to server form
 	const disconnectServer = async (): Promise<void> => {
-		backendProvider.value = null;
+		backendStore.reset();
 		offlineModeStore.setServerUrlConfigured(false);
 		offlineModeStore.isOfflineMode = false;
 		formServerPassword.value = "";
@@ -280,7 +282,7 @@ export const useSetupPage = () => {
 	// Cycle through repository types
 	const cycleThroughRepositoryTypes = (currentOption: RepositoryType): RepositoryType => {
 		const currentIndex = repositoryTypeOptions.findIndex(
-			(option) => option.value === currentOption
+			(option) => option.value === currentOption,
 		);
 		const nextIndex = (currentIndex + 1) % repositoryTypeOptions.length;
 		const nextRepositoryOption = repositoryTypeOptions[nextIndex];
@@ -315,4 +317,4 @@ export const useSetupPage = () => {
 		resetProjectForm,
 		disconnectServer,
 	};
-}
+};
