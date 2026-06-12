@@ -6,9 +6,12 @@
 }
 
 @layer base {
-	/* Remove the tap-highlight flash on touch devices */
+	/* Remove the tap-highlight flash on touch devices.
+	** Set touch-action to manipulation to disable double-tap-to-zoom
+	*/
 	html {
 		-webkit-tap-highlight-color: transparent;
+		touch-action: manipulation;
 	}
 
 	/* Suppress focus outline for pointer/touch */
