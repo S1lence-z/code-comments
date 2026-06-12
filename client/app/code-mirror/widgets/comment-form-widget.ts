@@ -59,7 +59,7 @@ export default class CommentFormWidget extends WidgetType {
 	toDOM(): HTMLDivElement {
 		const wrap = document.createElement("div");
 		wrap.className =
-			"cm-comment-form-widget shadow-lg backdrop-blur-lg bg-[rgba(255,255,255,0.08)] text-slate-50 py-3.5 px-4 border border-[rgba(255,255,255,0.1)] rounded-xl flex flex-start gap-4 items-start w-3/4 flex flex-start";
+			"cm-comment-form-widget shadow-lg backdrop-blur-lg bg-[rgba(255,255,255,0.08)] text-slate-50 py-3.5 px-4 border border-[rgba(255,255,255,0.1)] rounded-xl flex items-start gap-4 w-3/4 max-md:w-full max-md:flex-col";
 
 		// Form
 		const formContainer = this.createForm();
@@ -67,7 +67,7 @@ export default class CommentFormWidget extends WidgetType {
 
 		// Info
 		const infoAndButtonsContainer = document.createElement("div");
-		infoAndButtonsContainer.className = "flex flex-col gap-2";
+		infoAndButtonsContainer.className = "flex flex-col gap-2 max-md:w-full";
 
 		infoAndButtonsContainer.appendChild(this.createInfo());
 		infoAndButtonsContainer.appendChild(this.createButtonGroup());
@@ -88,7 +88,7 @@ export default class CommentFormWidget extends WidgetType {
 
 	private createForm(): HTMLDivElement {
 		const container = document.createElement("div");
-		container.className = "cm-comment-form flex flex-col flex-1 gap-2";
+		container.className = "cm-comment-form flex flex-col flex-1 max-md:flex-none gap-2 w-full";
 
 		if (this.showCategorySelect) {
 			container.appendChild(this.createCategorySelect());
@@ -132,7 +132,7 @@ export default class CommentFormWidget extends WidgetType {
 
 		const select = document.createElement("select");
 		select.className =
-			"comment-form-category-select w-full text-white p-3 border border-gray-600 rounded-md bg-modern-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-modern-blue";
+			"comment-form-category-select w-full text-base text-white p-3 border border-gray-600 rounded-md bg-modern-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-modern-blue";
 
 		this.categories.forEach((cat) => {
 			const option = document.createElement("option");
