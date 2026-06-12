@@ -18,12 +18,6 @@
 	:focus:not(:focus-visible) {
 		outline: none;
 	}
-
-	/* Stop overscroll glow / bounce chaining to the document */
-	html,
-	body {
-		overscroll-behavior: none;
-	}
 }
 
 @layer components {
@@ -88,7 +82,7 @@
 
 	/* Page Styles */
 	.page {
-		@apply h-full overflow-y-auto overscroll-contain bg-linear-to-br from-slate-900 via-slate-800 to-slate-900;
+		@apply h-full overflow-y-auto bg-linear-to-br from-slate-900 via-slate-800 to-slate-900;
 	}
 
 	/* Modern Card Styles */
