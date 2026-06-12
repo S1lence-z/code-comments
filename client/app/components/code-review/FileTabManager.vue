@@ -37,7 +37,7 @@ const {
 			<!-- File tabs container -->
 			<div
 				ref="fileTabsContainer"
-				class="flex items-center py-2 overflow-scroll scrollbar-minimal overflow-y-hidden"
+				class="flex items-center py-2 overflow-scroll overscroll-x-contain scrollbar-minimal overflow-y-hidden"
 			>
 				<!-- File Tabs -->
 				<div class="flex items-center gap-2 px-4">

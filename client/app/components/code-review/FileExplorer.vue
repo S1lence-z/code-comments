@@ -39,7 +39,7 @@ const {
 			/>
 		</div>
 		<!-- File Tree -->
-		<div class="flex-1 overflow-y-auto scrollbar-hidden bg-white/10">
+		<div class="flex-1 overflow-y-auto overscroll-contain scrollbar-hidden bg-white/10">
 			<ul class="p-2 space-y-1">
 				<FileExplorerItem
 					v-for="item in props.treeData"

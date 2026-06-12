@@ -36,11 +36,12 @@
 		border-radius: 3px;
 	}
 
-	/* File Tab Manager Styles */
-	.file-tabs {
-		@apply flex items-center gap-2 overflow-x-auto;
+	/* Contain touch overscroll inside the code editor */
+	.cm-scroller {
+		overscroll-behavior: contain;
 	}
 
+	/* File Tab Manager Styles */
 	.file-tab {
 		@apply flex items-center bg-white/5 backdrop-blur-sm duration-200 rounded-lg text-base;
 	}
