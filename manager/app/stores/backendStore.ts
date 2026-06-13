@@ -17,8 +17,7 @@ export const useBackendStore = defineStore("backend", {
 		isConfigured: (state): boolean => state.provider !== null,
 	},
 	actions: {
-		// Build and store the provider for the given server. markRaw keeps the class
-		// instance out of Vue's reactivity system (it is a plain service, not state).
+		// Build and store the provider for the given server
 		configure(serverBaseUrl: string, token?: string) {
 			this.provider = new StandardBackendProvider(serverBaseUrl, token);
 			this.serverBaseUrl = serverBaseUrl;
