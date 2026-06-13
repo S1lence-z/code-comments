@@ -5,6 +5,8 @@ import { navigationLinks } from "./core/routes";
 const authStore = useAuthStore();
 const isAppReady = ref(false);
 const { t } = useI18n();
+const route = useRoute();
+const pinFooter = computed(() => route.meta.pinFooter === true);
 
 onMounted(() => {
 	authStore.loadAuthToken();
@@ -13,7 +15,11 @@ onMounted(() => {
 </script>
 
 <template>
-	<div v-if="isAppReady" class="flex flex-col min-h-screen overflow-hidden">
+	<div
+		v-if="isAppReady"
+		class="flex flex-col"
+		:class="pinFooter ? 'h-screen overflow-hidden' : 'min-h-screen'"
+	>
 		<!-- Navigation Bar -->
 		<AppNavigationBar
 			:title="t('appNavigationBar.title')"
@@ -22,7 +28,8 @@ onMounted(() => {
 		/>
 		<!-- Main Content -->
 		<main
-			class="flex-1 overflow-y-auto bg-linear-to-br from-slate-900 via-slate-800 to-slate-900"
+			class="flex-1 bg-linear-to-br from-slate-900 via-slate-800 to-slate-900"
+			:class="{ 'min-h-0 overflow-y-auto': pinFooter }"
 		>
 			<NuxtPage />
 		</main>
