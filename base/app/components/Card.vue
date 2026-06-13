@@ -7,7 +7,6 @@ interface Props {
 	iconName?: "plus" | "archive" | "code" | "folder" | "error" | "success" | "empty" | "externalLink";
 	iconSize?: string;
 	iconGradient?: "blue" | "green" | "emerald";
-	class?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -37,7 +36,7 @@ const getIconName = (iconName: string) => {
 </script>
 
 <template>
-	<div class="card" :class="props.class">
+	<div class="card">
 		<!-- Header with icon and title -->
 		<div v-if="title || iconName" class="card-header">
 			<div v-if="iconName" class="card-icon" :class="gradientClasses[iconGradient]">
