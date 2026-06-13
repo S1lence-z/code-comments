@@ -25,6 +25,7 @@ const emit = defineEmits<ProjectListEmits>();
 		iconName="archive"
 		iconGradient="blue"
 		iconSize="6"
+		class="lg:flex lg:flex-col lg:h-full lg:min-h-0"
 	>
 		<!-- Loading State -->
 		<div v-if="props.isLoadingProjects" class="flex justify-center items-center h-32">
@@ -39,7 +40,7 @@ const emit = defineEmits<ProjectListEmits>();
 			<p class="text-slate-500 text-sm mt-2">{{ t("projectList.noProjectsSubtext") }}</p>
 		</div>
 		<!-- Existing Projects List -->
-		<div v-else class="space-y-4">
+		<div v-else class="space-y-4 overflow-y-auto scrollbar-minimal lg:flex-1 lg:min-h-0">
 			<div
 				v-for="project in existingProjects"
 				:key="project.id"

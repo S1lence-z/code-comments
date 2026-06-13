@@ -4,6 +4,8 @@ import { Icon } from "@iconify/vue";
 import { useAuthStore } from "../../../base/app/stores/authStore";
 import { RepositoryType } from "../../../base/app/types/repository-type";
 
+definePageMeta({ pinFooter: true });
+
 const { t } = useI18n();
 const route = useRoute();
 const authStore = useAuthStore();
@@ -96,11 +98,13 @@ watch(
 </script>
 
 <template>
-	<div>
+	<div class="lg:h-full lg:min-h-0 lg:flex lg:flex-col">
 		<!-- Main Content -->
-		<div class="mx-auto max-w-7xl px-6 mt-8 lg:flex-row space-y-6 pb-12">
+		<div
+			class="mx-auto w-full max-w-7xl px-6 mt-8 space-y-6 pb-12 lg:pb-6 lg:flex-1 lg:min-h-0 lg:flex lg:flex-col lg:gap-6 lg:space-y-0"
+		>
 			<!-- Error Message -->
-			<div v-if="!projectsLoadedSuccessfully" class="flex status-message error gap">
+			<div v-if="!projectsLoadedSuccessfully" class="flex status-message error gap lg:shrink-0">
 				<div class="flex items-center gap-3">
 					<div class="card-icon-sm">
 						<Icon icon="mdi:alert-circle" class="w-5 h-5 text-red-400" />
@@ -113,7 +117,7 @@ watch(
 			<!-- Server Status Bar -->
 			<div
 				v-if="offlineModeStore.isServerUrlConfigured && !offlineModeStore.isOfflineMode"
-				class="flex flex-col gap-4 md:gap-0 md:flex-row items-center justify-between bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3"
+				class="flex flex-col gap-4 md:gap-0 md:flex-row items-center justify-between bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 lg:shrink-0"
 			>
 				<div class="flex flex-col sm:flex-row items-center gap-2 text-slate-300">
 					<Icon icon="mdi:server" class="w-5 h-5 text-emerald-400" />
@@ -129,7 +133,7 @@ watch(
 				/>
 			</div>
 			<!-- Setup Card -->
-			<div class="flex flex-col gap-6 lg:flex-row">
+			<div class="flex flex-col gap-6 lg:flex-row lg:flex-1 lg:min-h-0">
 				<!-- Server Form -->
 				<ServerForm
 					v-if="!offlineModeStore.isServerUrlConfigured"
@@ -143,7 +147,7 @@ watch(
 				<!-- Existing Projects List -->
 				<div
 					v-if="offlineModeStore.isServerUrlConfigured && !offlineModeStore.isOfflineMode"
-					class="flex-0.5"
+					class="lg:min-h-0"
 				>
 					<ProjectList
 						:existingProjects="existingProjects"
