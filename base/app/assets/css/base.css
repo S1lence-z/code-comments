@@ -195,4 +195,21 @@
 	.toast-border-info {
 		@apply border-l-4 border-blue-500;
 	}
+
+	/* Minimal scrollbar styles */
+	.scrollbar-minimal::-webkit-scrollbar {
+		height: 6px;
+		width: 6px;
+	}
+	.scrollbar-minimal::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	.scrollbar-minimal::-webkit-scrollbar-thumb {
+		background-color: rgba(255, 255, 255, 0.2);
+		border-radius: 3px;
+	}
+	.scrollbar-minimal {
+		scrollbar-width: thin;
+		scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+	}
 }
