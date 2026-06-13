@@ -127,10 +127,6 @@
 		}
 	}
 
-	.card-content {
-		@apply mx-auto justify-center items-center;
-	}
-
 	.empty-state {
 		@apply text-center py-12;
 	}
